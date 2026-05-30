@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Portal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="portal">
+    <header class="portal-header">
+      <h1>Student Portal</h1>
+      <p>Sign in to see your courses and grades.</p>
+    </header>
+
+    <main class="portal-main">
+      <section class="portal-card login-card" id="loginCard">
+        <h2>Login</h2>
+        <form id="loginForm" novalidate>
+          <label for="studentId">Student ID</label>
+          <input id="studentId" type="text" placeholder="S123456" required />
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="password123" required />
+          <div id="loginError" class="login-error" aria-live="polite"></div>
+          <button type="submit">Sign In</button>
+        </form>
+      </section>
+
+      <section class="portal-grid" id="dashboard" hidden>
+        <article class="portal-card info-card">
+          <h2>Welcome, <span id="studentName">Student</span></h2>
+          <p id="studentMessage">Your dashboard will appear here.</p>
+          <button id="logoutButton" class="logout-button" type="button">Logout</button>
+        </article>
+
+        <article class="portal-card data-card">
+          <h3>Courses</h3>
+          <ul id="courseList"></ul>
+        </article>
+
+        <article class="portal-card data-card">
+          <h3>Grades</h3>
+          <ul id="gradeList"></ul>
+        </article>
+
+        <article class="portal-card announcement-card">
+          <h3>Announcements</h3>
+          <div id="announcementList"></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="portal-footer">
+      <p>Student Portal © 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    const student = {
+      id: 'S123456',
+      name: 'Alex Carter',
+      courses: [
+        { code: 'ENG101', title: 'English Literature' },
+        { code: 'MATH205', title: 'Calculus II' },
+        { code: 'CS150', title: 'Intro to Programming' }
+      ],
+      grades: [
+        { course: 'ENG101', grade: 'A-' },
+        { course: 'MATH205', grade: 'B+' },
+        { course: 'CS150', grade: 'A' }
+      ],
+      announcements: [
+        'Exam review Friday at 3 PM.',
+        'New assignments are available.',
+        'Library hours extended during finals.'
+      ]
+    };
+
+    const loginForm = document.getElementById('loginForm');
+    const loginCard = document.getElementById('loginCard');
+    const dashboard = document.getElementById('dashboard');
+    const loginError = document.getElementById('loginError');
+    const logoutButton = document.getElementById('logoutButton');
+    const studentName = document.getElementById('studentName');
+    const studentMessage = document.getElementById('studentMessage');
+    const courseList = document.getElementById('courseList');
+    const gradeList = document.getElementById('gradeList');
+    const announcementList = document.getElementById('announcementList');
+
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      const id = document.getElementById('studentId').value.trim();
+      const pass = document.getElementById('password').value.trim();
+      if (id === student.id && pass === 'password123') {
+        loginError.textContent = '';
+        loginCard.hidden = true;
+        dashboard.hidden = false;
+        updateDashboard();
+      } else {
+        loginError.textContent = 'Invalid ID or password.';
+      }
+    });
+
+    logoutButton.addEventListener('click', () => {
+      loginCard.hidden = false;
+      dashboard.hidden = true;
+      loginError.textContent = '';
+      loginForm.reset();
+      document.getElementById('studentId').focus();
+    });
+
+    function updateDashboard() {
+      studentName.textContent = student.name;
+      studentMessage.textContent = `You have ${student.courses.length} courses and ${student.grades.length} grades.`;
+      courseList.innerHTML = student.courses.map(c => `<li><strong>${c.code}</strong> ${c.title}</li>`).join('');
+      gradeList.innerHTML = student.grades.map(g => `<li>${g.course} — ${g.grade}</li>`).join('');
+      announcementList.innerHTML = student.announcements.map(a => `<p>• ${a}</p>`).join('');
+    }
+  </script>
+</body>
+</html>
